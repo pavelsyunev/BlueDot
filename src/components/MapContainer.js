@@ -10,7 +10,8 @@ import MyLocationContainer from "./MyLocationContaiter";
 
 const MapContainer = () => {
     const {isLoaded} = useJsApiLoader({
-        googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+        // googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+        googleMapsApiKey: "AIzaSyBOWIxGdw4KXHzNo31n82ERDjPeOdAhtis",
         libraries: ['places']
     })
 
