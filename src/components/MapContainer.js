@@ -64,7 +64,7 @@ const MapContainer = () => {
         return () => {
             navigator.geolocation.clearWatch(watchId);
         };
-    }, []);
+    }, [setUserLocation]);
 
     if (!isLoaded) {
         return
