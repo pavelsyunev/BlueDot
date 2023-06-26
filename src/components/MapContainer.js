@@ -55,6 +55,8 @@ const MapContainer = () => {
                 case error.UNKNOWN_ERROR:
                     setAppError("An unknown error occurred.");
                     break;
+                default:
+                    setAppError("An unknown error occurred.");
             }
         };
 
