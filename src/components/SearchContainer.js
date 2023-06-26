@@ -7,7 +7,7 @@ import {FaRegClock, FaWalking} from "react-icons/fa"
 const SearchContainer = () => {
     const { handleFetchDirections, handleCleanSelectedLocations, duration, distance } = useContext(MapsContext);
 
-    const buttonLabel = duration && distance ? "Clear Path" : "GO";
+    const buttonLabel = duration && distance ? "Clear" : "GO";
     const handleButtonClick = () => {
         if(duration && distance) {
             handleCleanSelectedLocations()
