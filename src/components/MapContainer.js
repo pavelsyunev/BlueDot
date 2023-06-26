@@ -4,9 +4,11 @@ import {
     Marker,
     DirectionsRenderer
 } from '@react-google-maps/api'
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useContext} from 'react'
+import { MapsContext } from '../contexts/MapsContext';
 import SearchContainer from "./SearchContainer";
 import MyLocationContainer from "./MyLocationContaiter";
+import Errors from "./Errors";
 
 const MapContainer = () => {
     const {isLoaded} = useJsApiLoader({
@@ -14,55 +16,55 @@ const MapContainer = () => {
         libraries: ['places']
     })
 
-    const [map, setMap] = useState( /** @type google.maps.GoogleMap */ (null))
-    const [userLocation, setUserLocation] = useState(null)
-    const [selectedTo, setSelectedTo] = useState(null);
-    const [directions, setDirections] = useState(null);
-    const [distance, setDistance] = useState('')
-    const [duration, setDuration] = useState('')
+    const { setMap, handleMoveToPin, handleMapPlaceInfo, userLocation, setUserLocation, selectedTo, directions, handleCleanSelectedLocations } = useContext(MapsContext);
 
+    const [appError, setAppError] = useState(null)
 
     useEffect(() => {
-        navigator.geolocation.getCurrentPosition(position => {
-            setUserLocation({lat: position.coords.latitude, lng: position.coords.longitude})
-        })
-    }, []);
-
-    const handleCleanSelectedLocations = () => {
-        setSelectedTo(null);
-        setDirections(null)
-        setDistance('')
-        setDuration('')
-    }
-
-    const handleMoveToPin = (pinLocation) => {
-        setTimeout(() => {
-            map.panTo(pinLocation);
-        }, 100)
-    }
-
-    const fetchDirections = () => {
-        if (!selectedTo) return;
-
-        // eslint-disable-next-line no-undef
-        const service = new google.maps.DirectionsService();
-
-        service.route(
-            {
-                origin: userLocation,
-                destination: selectedTo,
-                // eslint-disable-next-line no-undef
-                travelMode: google.maps.TravelMode.WALKING,
-            },
-            (result, status) => {
-                if (status === "OK" && result) {
-                    setDirections(result);
-                    setDistance(result.routes[0].legs[0].distance.text)
-                    setDuration(result.routes[0].legs[0].duration.text)
-                }
+        let watchId;
+        const trackLocation = () => {
+            if (navigator.geolocation) {
+                const options = {
+                    enableHighAccuracy: true,
+                    maximumAge: 0
+                };
+                watchId = navigator.geolocation.watchPosition(showPosition, errorHandler, options);
+                // setAppError(null)
+            } else {
+                setAppError("Geolocation is not supported by this browser.");
             }
-        );
-    };
+        };
+
+        const showPosition = (position) => {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            setUserLocation({lat: latitude, lng: longitude})
+        };
+
+        const errorHandler = (error) => {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    setAppError("User denied the request for Geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    setAppError("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    setAppError("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    setAppError("An unknown error occurred.");
+                    break;
+            }
+        };
+
+        trackLocation();
+
+        // Clean up the geolocation watcher when the component unmounts
+        return () => {
+            navigator.geolocation.clearWatch(watchId);
+        };
+    }, []);
 
     if (!isLoaded) {
         return
@@ -70,15 +72,8 @@ const MapContainer = () => {
 
     return (
         <>
-            <SearchContainer
-                isUserCurrentLocation={!!userLocation}
-                setSelectedTo={setSelectedTo}
-                moveToPin={handleMoveToPin}
-                clearLocations={handleCleanSelectedLocations}
-                fetchDirections={fetchDirections}
-                distance={distance}
-                duration={duration}
-            />
+            <SearchContainer/>
+            {appError && < Errors errors={appError} />}
             <GoogleMap
                 center={userLocation}
                 zoom={15}
@@ -89,9 +84,13 @@ const MapContainer = () => {
                     streetViewControl: false,
                     mapTypeControl: false,
                     fullscreenControl: false,
-                    clickableIcons: false
+                    clickableIcons: true
                 }}
                 onLoad={map => setMap(map)}
+                onClick={placeIcon => {
+                    handleCleanSelectedLocations()
+                    handleMapPlaceInfo(placeIcon.placeId)
+                }}
             >
                 {!!userLocation && (<Marker position={userLocation} label='A'/>)}
                 {!!selectedTo && (<Marker position={selectedTo} label='B'/>)}
@@ -99,7 +98,6 @@ const MapContainer = () => {
                     <DirectionsRenderer directions={directions} options={{suppressMarkers: true}}/>
                 )}
             </GoogleMap>
-            {/*{!userLocation && <p>Geolocation required for this application</p>}*/}
             <MyLocationContainer
                 userCurrentLocation={() => handleMoveToPin(userLocation)}
                 isUserCurrentLocation={!!userLocation}

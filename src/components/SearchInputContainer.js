@@ -1,7 +1,9 @@
+import {useContext} from 'react'
 import usePlacesAutocomplete, {
     getGeocode,
     getLatLng,
 } from "use-places-autocomplete";
+import { MapsContext } from '../contexts/MapsContext';
 import {
     Combobox,
     ComboboxInput,
@@ -11,7 +13,9 @@ import {
 } from "@reach/combobox";
 import "@reach/combobox/styles.css";
 
-const SearchInputContainer = ({ setSelected, moveToPin, clearLocations}) => {
+const SearchInputContainer = () => {
+    const { mapPlaceInfo, handleMoveToPin, handleCleanSelectedLocations, setSelectedTo, searchInputValue, setSearchInputValue } = useContext(MapsContext);
+
     const {
         ready,
         value,
@@ -20,29 +24,36 @@ const SearchInputContainer = ({ setSelected, moveToPin, clearLocations}) => {
         clearSuggestions,
     } = usePlacesAutocomplete();
 
+    console.log('value', value, !!value)
+    const { placeName } = mapPlaceInfo;
+    const inputValue = (searchInputValue || !!placeName) ? (searchInputValue ? value : placeName) : ''
+
     const handleSelect = async (address) => {
         setValue(address, false);
         clearSuggestions();
 
         const results = await getGeocode({ address });
         const { lat, lng } = await getLatLng(results[0]);
-        setSelected({ lat, lng });
-        moveToPin({ lat, lng })
+        setSelectedTo({ lat, lng });
+        handleMoveToPin({ lat, lng })
+    }
+
+    const handleInputOnChange = (e) => {
+        setValue(e.target.value)
+        if(e.target.value === '') handleCleanSelectedLocations()
+        if(e.target.value !== '') setSearchInputValue(true)
     }
 
     return (
         <Combobox onSelect={handleSelect}>
             <ComboboxInput
-                value={value}
-                onChange={(e) => {
-                    setValue(e.target.value)
-                    if(e.target.value === '') clearLocations()
-                }}
+                value={inputValue}
+                onChange={(e) => handleInputOnChange(e)}
                 disabled={!ready}
                 className="shadow w-full appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 placeholder={"Where to go?"}
             />
-            <ComboboxPopover
+            {status === "OK" && !placeName && <ComboboxPopover
                 className="shadow w-full rounded leading-tight z-50"
             >
                 <ComboboxList>
@@ -51,7 +62,7 @@ const SearchInputContainer = ({ setSelected, moveToPin, clearLocations}) => {
                             <ComboboxOption key={place_id} value={description}/>
                         ))}
                 </ComboboxList>
-            </ComboboxPopover>
+            </ComboboxPopover>}
         </Combobox>
     );
 }
