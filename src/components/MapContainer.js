@@ -16,7 +16,7 @@ const MapContainer = () => {
         libraries: ['places']
     })
 
-    const { setMap, handleMoveToPin, handleMapPlaceInfo, userLocation, setUserLocation, selectedTo, directions, handleCleanSelectedLocations } = useContext(MapsContext);
+    const { setMap, handleMoveToPin, handleMapPlaceInfo, userLocation, setUserLocation, selectedTo, directions, handleCleanSelectedLocations, trackingMode } = useContext(MapsContext);
 
     const [appError, setAppError] = useState(null)
 
@@ -28,8 +28,14 @@ const MapContainer = () => {
                     enableHighAccuracy: true,
                     maximumAge: 0
                 };
-                watchId = navigator.geolocation.watchPosition(showPosition, errorHandler, options);
+                // watchId = navigator.geolocation.watchPosition(showPosition, errorHandler, options);
                 // setAppError(null)
+
+                if (trackingMode === 'getCurrentPosition') {
+                    navigator.geolocation.getCurrentPosition(showPosition, errorHandler, options);
+                } else if (trackingMode === 'watchPosition') {
+                    watchId = navigator.geolocation.watchPosition(showPosition, errorHandler, options);
+                }
             } else {
                 setAppError("Geolocation is not supported by this browser.");
             }

@@ -11,6 +11,7 @@ export const MapsProvider = ({ children }) => {
     const [distance, setDistance] = useState('')
     const [duration, setDuration] = useState('')
     const [searchInputValue, setSearchInputValue] = useState(false)
+    const [trackingMode, setTrackingMode] = useState('getCurrentPosition');
 
     const handleMoveToPin = (pinLocation) => {
         setTimeout(() => {
@@ -95,7 +96,9 @@ export const MapsProvider = ({ children }) => {
         selectedTo,
         setSelectedTo,
         searchInputValue,
-        setSearchInputValue
+        setSearchInputValue,
+        trackingMode,
+        setTrackingMode
     };
 
     return (
