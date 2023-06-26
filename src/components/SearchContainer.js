@@ -1,11 +1,11 @@
-import {useContext, useMemo} from 'react'
+import {useContext} from 'react'
 import { MapsContext } from '../contexts/MapsContext';
 import SearchInputContainer from "./SearchInputContainer";
 import {FaRegClock, FaWalking} from "react-icons/fa"
 
 
 const SearchContainer = () => {
-    const { handleFetchDirections, handleCleanSelectedLocations, duration, distance, selectedTo, searchInputValue } = useContext(MapsContext);
+    const { handleFetchDirections, handleCleanSelectedLocations, duration, distance } = useContext(MapsContext);
 
     const buttonLabel = duration && distance ? "Clear Path" : "GO";
     const handleButtonClick = () => {
