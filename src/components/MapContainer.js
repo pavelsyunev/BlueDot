@@ -72,7 +72,7 @@ const MapContainer = () => {
         return () => {
             navigator.geolocation.clearWatch(watchId);
         };
-    }, [setUserLocation]);
+    }, [setUserLocation, trackingMode]);
 
     if (!isLoaded) {
         return
