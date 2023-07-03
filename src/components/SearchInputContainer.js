@@ -24,7 +24,6 @@ const SearchInputContainer = () => {
         clearSuggestions,
     } = usePlacesAutocomplete();
 
-    console.log('value', value, !!value)
     const { placeName } = mapPlaceInfo;
     const inputValue = (searchInputValue || !!placeName) ? (searchInputValue ? value : placeName) : ''
 
