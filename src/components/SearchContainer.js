@@ -37,6 +37,8 @@ const SearchContainer = () => {
 
             {duration && distance && (<div className="flex content-center justify-between  mb-4 text-gray-700">
                 <div className="flex content-center gap-6">
+                    <div className="flex items-center w-6 h-6 rounded-full bg-red-700"></div>
+                    {'-'}
                     <div className="flex items-center">
                         <FaRegClock size={22}/>
                         <p className="ml-2">{duration}</p>

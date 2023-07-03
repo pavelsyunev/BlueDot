@@ -20,14 +20,13 @@ const MapContainer = () => {
     const {
         setMap,
         handleMoveToPin,
-        handleMapPlaceInfo,
         userLocation,
         selectedTo,
         directions,
-        handleCleanSelectedLocations,
         trackLocation,
         appError,
         center,
+        handlePlaceIconClick
     } = useContext(MapsContext);
 
     useEffect(() => {
@@ -55,16 +54,29 @@ const MapContainer = () => {
                     clickableIcons: true
                 }}
                 onLoad={map => setMap(map)}
-                onClick={placeIcon => {
-                    handleCleanSelectedLocations()
-                    handleMapPlaceInfo(placeIcon.placeId)
-                }}
+                onClick={placeIcon => handlePlaceIconClick(placeIcon)}
             >
                 {!!userLocation && (<Marker position={userLocation} label='A'/>)}
                 {!!selectedTo && (<Marker position={selectedTo} label='B'/>)}
-                {directions && (
-                    <DirectionsRenderer directions={directions} options={{suppressMarkers: true}}/>
-                )}
+
+                {directions &&
+                    directions.routes.map((route, index) => {
+                        const color = index === 0 ? '#b91c1c' : 'rgba(29, 78, 216, 0.3)'; // Set different colors based on the route index
+
+                        return (
+                            <DirectionsRenderer
+                                key={index}
+                                options={{
+                                    suppressMarkers: true,
+                                    directions: directions,
+                                    routeIndex: index,
+                                    polylineOptions: {
+                                        strokeColor: color,
+                                    },
+                                }}
+                            />
+                        );
+                    })}
             </GoogleMap>
             <MyLocationContainer
                 userCurrentLocation={() => {

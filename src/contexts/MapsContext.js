@@ -18,7 +18,6 @@ export const MapsProvider = ({children}) => {
     const watchId = useRef(null);
     const trackLocation = useCallback(() => {
         const clearWatch = () => {
-            console.log('watchId in clear', watchId)
             if (watchId) {
                 navigator.geolocation.clearWatch(watchId);
                 watchId.current = null;
@@ -112,6 +111,7 @@ export const MapsProvider = ({children}) => {
                 destination: selectedTo,
                 // eslint-disable-next-line no-undef
                 travelMode: google.maps.TravelMode.WALKING,
+                provideRouteAlternatives: true, // Fetch alternative routes
             },
             (result, status) => {
                 if (status === "OK" && result) {
@@ -130,6 +130,13 @@ export const MapsProvider = ({children}) => {
         setDuration('')
         setSearchInputValue(false)
         setMapPlaceInfo({placeName: null, placeLat: null, placeLng: null})
+    }
+
+    const handlePlaceIconClick = (placeIcon) => {
+        if(!!placeIcon?.placeId) {
+            handleCleanSelectedLocations()
+            handleMapPlaceInfo(placeIcon?.placeId)
+        }
     }
 
     const sharedState = {
@@ -154,7 +161,8 @@ export const MapsProvider = ({children}) => {
         trackLocation,
         appError,
         setAppError,
-        center
+        center,
+        handlePlaceIconClick
     };
 
     return (
