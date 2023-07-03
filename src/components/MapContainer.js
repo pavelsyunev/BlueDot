@@ -61,7 +61,7 @@ const MapContainer = () => {
 
                 {directions &&
                     directions.routes.map((route, index) => {
-                        const color = index === 0 ? '#b91c1c' : 'rgba(29, 78, 216, 0.3)'; // Set different colors based on the route index
+                        const color = index === 0 ? '#dc2626' : 'rgba(29, 78, 216, 0.4)'; // Set different colors based on the route index
 
                         return (
                             <DirectionsRenderer
