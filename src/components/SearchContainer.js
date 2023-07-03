@@ -18,16 +18,10 @@ const SearchContainer = () => {
         }
     }
 
-    // Memoized child component
-    // const memoizedSearchInputContainer = useMemo(() => {
-    //     return <SearchInputContainer />;
-    // }, [selectedTo, searchInputValue]);
-
     return (
         <div className="flex flex-col w-11/12 rounded shadow-md bg-white absolute z-50 m-6 p-4">
             <div className="flex gap-6 mb-4">
                 <div className="w-full mt-5">
-                    {/*{memoizedSearchInputContainer}*/}
                     <SearchInputContainer />
                 </div>
 
