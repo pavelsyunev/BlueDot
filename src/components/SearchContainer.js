@@ -20,9 +20,9 @@ const SearchContainer = () => {
             handleCleanSelectedLocations()
             setTrackingMode('getCurrentPosition')
         } else {
-            setCenter(null)
             handleFetchDirections()
             setTrackingMode('watchPosition')
+            setCenter(null)
         }
     }
 
