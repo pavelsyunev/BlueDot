@@ -173,7 +173,8 @@ export const MapsProvider = ({children}) => {
         appError,
         setAppError,
         center,
-        handlePlaceIconClick
+        handlePlaceIconClick,
+        setCenter
     };
 
     return (
