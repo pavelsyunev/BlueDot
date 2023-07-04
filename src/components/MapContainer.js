@@ -37,8 +37,6 @@ const MapContainer = () => {
         return
     }
 
-    console.log(center)
-
     return (
         <>
             <SearchContainer/>

@@ -57,7 +57,8 @@ export const MapsProvider = ({children}) => {
         if (navigator.geolocation) {
             const options = {
                 enableHighAccuracy: true,
-                maximumAge: 0
+                maximumAge: 0,
+                timeout: 10000
             };
 
             if (trackingMode === 'getCurrentPosition') {
