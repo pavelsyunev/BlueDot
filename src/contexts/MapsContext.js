@@ -37,7 +37,6 @@ export const MapsProvider = ({children}) => {
         };
 
         const errorHandler = (error) => {
-            setAppError(null)
             switch (error.code) {
                 case error.PERMISSION_DENIED:
                     setAppError("User denied the request for Geolocation.");
@@ -60,7 +59,7 @@ export const MapsProvider = ({children}) => {
             const options = {
                 enableHighAccuracy: true,
                 maximumAge: 0,
-                timeout: 5000
+                // timeout: 5000
             };
 
             // clearWatch(); // Stop any ongoing watchPosition
@@ -76,6 +75,8 @@ export const MapsProvider = ({children}) => {
         } else {
             setAppError("Geolocation is not supported by this browser.");
         }
+
+        setAppError(null)
 
         return clearWatch;
 
