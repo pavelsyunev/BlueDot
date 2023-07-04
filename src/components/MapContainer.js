@@ -30,7 +30,11 @@ const MapContainer = () => {
     } = useContext(MapsContext);
 
     useEffect(() => {
-        trackLocation();
+        const clearWatch = trackLocation(); // Invoke trackLocation and capture the returned clearWatch function
+
+        return () => {
+            clearWatch(); // Invoke the clearWatch function when the component unmounts
+        };
     }, [trackLocation]);
 
     if (!isLoaded) {

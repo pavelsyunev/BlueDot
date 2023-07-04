@@ -1,4 +1,4 @@
-import React, {createContext, useState, useEffect, useCallback, useRef} from 'react';
+import React, {createContext, useState, useCallback, useRef} from 'react';
 
 export const MapsContext = createContext();
 
@@ -18,8 +18,8 @@ export const MapsProvider = ({children}) => {
     const watchId = useRef(null);
     const trackLocation = useCallback(() => {
         const clearWatch = () => {
-            if (watchId) {
-                navigator.geolocation.clearWatch(watchId);
+            if (watchId.current) {
+                navigator.geolocation.clearWatch(watchId.current);
                 watchId.current = null;
             }
         };
@@ -28,14 +28,16 @@ export const MapsProvider = ({children}) => {
             const latitude = position.coords.latitude;
             const longitude = position.coords.longitude;
             setUserLocation({lat: latitude, lng: longitude});
+            setCenter({lat: latitude, lng: longitude})
 
             if (trackingMode === 'getCurrentPosition') {
                 setCenter({lat: latitude, lng: longitude})
-                clearWatch()
+                // clearWatch()
             }
         };
 
         const errorHandler = (error) => {
+            setAppError(null)
             switch (error.code) {
                 case error.PERMISSION_DENIED:
                     setAppError("User denied the request for Geolocation.");
@@ -58,14 +60,19 @@ export const MapsProvider = ({children}) => {
             const options = {
                 enableHighAccuracy: true,
                 maximumAge: 0,
-                timeout: 10000
+                timeout: 5000
             };
+
+            // clearWatch(); // Stop any ongoing watchPosition
 
             if (trackingMode === 'getCurrentPosition') {
                 navigator.geolocation.getCurrentPosition(showPosition, errorHandler, options);
             } else if (trackingMode === 'watchPosition') {
                 watchId.current = navigator.geolocation.watchPosition(showPosition, errorHandler, options);
             }
+
+            // navigator.geolocation.getCurrentPosition(showPosition, errorHandler, options);
+            // watchId.current = navigator.geolocation.watchPosition(showPosition, errorHandler, options);
         } else {
             setAppError("Geolocation is not supported by this browser.");
         }
@@ -73,14 +80,6 @@ export const MapsProvider = ({children}) => {
         return clearWatch;
 
     }, [trackingMode, setUserLocation, setAppError]);
-
-    useEffect(() => {
-        const clearWatch = trackLocation(); // Invoke trackLocation and capture the returned clearWatch function
-
-        return () => {
-            clearWatch(); // Invoke the clearWatch function when the component unmounts
-        };
-    }, [trackLocation]);
 
     const handleMoveToPin = (pinLocation) => {
         setTimeout(() => {
