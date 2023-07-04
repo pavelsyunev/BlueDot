@@ -1,4 +1,4 @@
-import React, {createContext, useState, useCallback, useRef} from 'react';
+import React, {createContext, useState, useEffect, useCallback, useRef} from 'react';
 
 export const MapsContext = createContext();
 
@@ -68,7 +68,18 @@ export const MapsProvider = ({children}) => {
         } else {
             setAppError("Geolocation is not supported by this browser.");
         }
+
+        return clearWatch;
+
     }, [trackingMode, setUserLocation, setAppError]);
+
+    useEffect(() => {
+        const clearWatch = trackLocation(); // Invoke trackLocation and capture the returned clearWatch function
+
+        return () => {
+            clearWatch(); // Invoke the clearWatch function when the component unmounts
+        };
+    }, [trackLocation]);
 
     const handleMoveToPin = (pinLocation) => {
         setTimeout(() => {
