@@ -41,6 +41,8 @@ const MapContainer = () => {
         return
     }
 
+    console.log('center', center)
+
     return (
         <>
             <SearchContainer/>

@@ -28,7 +28,6 @@ export const MapsProvider = ({children}) => {
             const latitude = position.coords.latitude;
             const longitude = position.coords.longitude;
             setUserLocation({lat: latitude, lng: longitude});
-            setCenter({lat: latitude, lng: longitude})
 
             if (trackingMode === 'getCurrentPosition') {
                 setCenter({lat: latitude, lng: longitude})
