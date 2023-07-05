@@ -19,14 +19,15 @@ const MapContainer = () => {
 
     const {
         setMap,
-        handleMoveToPin,
+        // handleMoveToPin,
         userLocation,
         selectedTo,
         directions,
         trackLocation,
         appError,
         center,
-        handlePlaceIconClick
+        handlePlaceIconClick,
+        handleUserCurrentLocation
     } = useContext(MapsContext);
 
     useEffect(() => {
@@ -40,8 +41,6 @@ const MapContainer = () => {
     if (!isLoaded) {
         return
     }
-
-    console.log('center', center)
 
     return (
         <>
@@ -85,9 +84,7 @@ const MapContainer = () => {
                     })}
             </GoogleMap>
             <MyLocationContainer
-                userCurrentLocation={() => {
-                    handleMoveToPin(userLocation)
-                }}
+                userCurrentLocation={handleUserCurrentLocation}
                 isUserCurrentLocation={!!userLocation}
             />
         </>

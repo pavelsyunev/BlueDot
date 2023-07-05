@@ -132,6 +132,9 @@ export const MapsProvider = ({children}) => {
                 }
             }
         );
+
+        setTrackingMode('watchPosition')
+        setCenter(null)
     };
 
     const handleCleanSelectedLocations = () => {
@@ -141,12 +144,21 @@ export const MapsProvider = ({children}) => {
         setDuration('')
         setSearchInputValue(false)
         setMapPlaceInfo({placeName: null, placeLat: null, placeLng: null})
+        setTrackingMode('getCurrentPosition')
     }
 
     const handlePlaceIconClick = (placeIcon) => {
         if(!!placeIcon?.placeId) {
             handleCleanSelectedLocations()
             handleMapPlaceInfo(placeIcon?.placeId)
+        }
+    }
+
+    const handleUserCurrentLocation = () => {
+        if (trackingMode === 'getCurrentPosition') {
+            trackLocation()
+        } else {
+            handleMoveToPin(userLocation)
         }
     }
 
@@ -174,7 +186,8 @@ export const MapsProvider = ({children}) => {
         setAppError,
         center,
         handlePlaceIconClick,
-        setCenter
+        setCenter,
+        handleUserCurrentLocation
     };
 
     return (

@@ -10,19 +10,19 @@ const SearchContainer = () => {
         handleCleanSelectedLocations,
         duration,
         distance,
-        setTrackingMode,
-        setCenter
+        // setTrackingMode,
+        // setCenter
     } = useContext(MapsContext);
 
     const buttonLabel = duration && distance ? "Clear" : "GO";
     const handleButtonClick = () => {
         if(duration && distance) {
             handleCleanSelectedLocations()
-            setTrackingMode('getCurrentPosition')
+            // setTrackingMode('getCurrentPosition')
         } else {
             handleFetchDirections()
-            setTrackingMode('watchPosition')
-            setCenter(null)
+            // setTrackingMode('watchPosition')
+            // setCenter(null)
         }
     }
 
